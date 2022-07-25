@@ -174,6 +174,13 @@ ingress:
   #    hosts:
   #      - fluent-bit.example.tld
 
+route:
+  enabled: false
+  annotations: {}
+  host: ""
+
+### For Openshift deployments
+
 ## only available if kind is Deployment
 autoscaling:
   enabled: false

@@ -1,0 +1,35 @@
+{{- if .Values.route.enabled -}}
+{{- $serviceName := include "fluent-bit.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+{{- $fullName := include "fluent-bit.fullname" . -}}
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "fluent-bit.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "fluent-bit.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  host: {{ .Values.route.host }}
+  to:
+    kind: Service
+    name: {{ $serviceName }}
+    weight: 100
+  port:
+    targetPort: {{ $svcPort }}
+  tls:
+    termination: {{ .Values.route.tls.termination }}
+    insecureEdgeTerminationPolicy: {{ .Values.route.tls.insecureEdgeTerminationPolicy }}
+{{- end }}
+{{- end }}
